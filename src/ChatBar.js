@@ -2,12 +2,13 @@ import React, { Component } from "react";
 
 class ChatBar extends Component {
     render() {
-        const onKeyDown = (event: React.KeyboardEvent) => {
-            if (event, key === "Enter") {
+        const onKeyDown = event => {
+
+            if (event.key === "Enter") {
                 event.preventDefault()
-                const newMessage = event.target.elements.input
-                this.props.addNewMessage(newMessage.value)
-                newMessage.value = ""
+                const newMessage = event.target.value
+                this.props.addNewMessage(newMessage)
+                event.target.value = ""
             }
         }
         const userName = this.props.currentUser.name;
@@ -24,7 +25,7 @@ class ChatBar extends Component {
                     name="input"
                     className="chatbar-message"
                     placeholder="Type a message and hit ENTER"
-                    onKeyDown={this.onKeyDown}
+                    onKeyDown={onKeyDown}
                 />
             </div>
         )
