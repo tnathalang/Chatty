@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import ChatBar from "./ChatBar"
 import MessageList from "./MessageList"
-
-
+import uuid from "uuid"
 
 
 
@@ -12,20 +11,9 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentUser: { name: "Bob" }, // optional. if currentUser is not defined, it means the user is Anonymous
-      messages: [
-        {
-          id: 1,
-          username: "Bob",
-          content: "Has anyone seen my marbles?",
-        },
-        {
-          id: 2,
-          username: "Anonymous",
-          content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-        }
-      ]
-    }
+      currentUser: { name: "Bob" },
+      messages: [] // messages coming from the server will be stored here as they arrive
+    };
   }
 
 
@@ -40,6 +28,10 @@ class App extends Component {
 
     this.socketServer.onmessage = message => {
       console.log(message.data)
+      const newMessage = JSON.parse(message.data)
+      this.setState({
+        messages: this.state.messages.concat(newMessage)
+      })
     }
 
 
@@ -48,7 +40,7 @@ class App extends Component {
     setTimeout(() => {
 
       // Add a new message to the list of messages in the data store
-      const newMessage = { id: 4, username: "Michelle", content: "Hello there!" };
+      const newMessage = { id: uuid.v4(), username: "Michelle", content: "Hello there!" };
       const messages = this.state.messages.concat(newMessage)
       // Update the state of the app component.
       // Calling setState will trigger a call to render() in App and all child components.
@@ -56,19 +48,36 @@ class App extends Component {
     }, 3000);
   }
 
+  sendNewMessage = updateMessage => {
+
+
+    const msg = {
+      type: 'postMessage',
+      username: "Bob",
+      content: updateMessage,
+      id: uuid.v4()
+    }
+
+    this.socketServer.send(JSON.stringify(msg))
+
+  }
+
   addNewMessage = updateMessage => {
-    const newMessage = { username: "Bob", content: updateMessage };
+
+    this.sendNewMessage(updateMessage)
+
+    const newMessage = {
+      id: uuid.v4(),
+      username: "Bob",
+      content: updateMessage
+    };
     const messages = this.state.messages.concat(newMessage)
+
 
     this.setState({
       messages: messages
-
     })
   }
-
-
-
-
   render() {
     return (
       <div>

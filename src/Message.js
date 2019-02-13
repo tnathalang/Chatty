@@ -5,9 +5,11 @@ class Message extends Component {
 
         const message = this.props.content
         const username = this.props.username
+        const userId = this.props.id
 
         return (
             <div className="message" >
+                {userId}
 
                 <div className="message-username">
                     {username}
