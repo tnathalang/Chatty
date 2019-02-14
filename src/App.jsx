@@ -23,12 +23,13 @@ class App extends Component {
     this.socketServer = new WebSocket(url)
 
     this.socketServer.onopen = event => {
-      this.socketServer.send("Connected to the server");
+      console.log("Connected to the server");
     };
 
     this.socketServer.onmessage = message => {
-      console.log(message.data)
+
       const newMessage = JSON.parse(message.data)
+      console.log("client onMessage: ", newMessage)
       this.setState({
         messages: this.state.messages.concat(newMessage)
       })
@@ -37,15 +38,7 @@ class App extends Component {
 
 
 
-    setTimeout(() => {
 
-      // Add a new message to the list of messages in the data store
-      const newMessage = { id: uuid.v4(), username: "Michelle", content: "Hello there!" };
-      const messages = this.state.messages.concat(newMessage)
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({ messages: messages })
-    }, 3000);
   }
 
   sendNewMessage = updateMessage => {
@@ -77,10 +70,25 @@ class App extends Component {
     })
   }
 
+  sendUpdateUsername = newUsername => {
+    const message = {
+      type: 'PostNotification',
+      content: `${this.state.currentUser.name} has changed their name to ${newUsername}`
+    }
+
+    this.socketServer.send(JSON.stringify(message))
+    return message
+  }
+
   updateUsername = newUsername => {
+    let newMessage = this.sendUpdateUsername(newUsername)
+    console.log(newUsername)
+    const messages = this.state.messages.concat(newMessage)
+    console.log("messages is being created")
     this.setState({
-      currentUser: { name: newUsername }
-    })
+      currentUser: { name: newUsername },
+      messages: messages
+    }, () => { console.log(this.state.currentUser) })
   }
 
 
@@ -97,7 +105,7 @@ class App extends Component {
         />
 
         <div className="message system">
-          Anonymous1 changed their name to nomnom.
+          {this.sendUpdateUsername}
         </div>
 
 

@@ -9,7 +9,7 @@ class ChatBar extends Component {
         }
     }
     onKeyDown = event => {
-        console.log("what is event here: ", event.key)
+
         if (event.key === "Enter") {
 
             const newMessage = event.target.value
