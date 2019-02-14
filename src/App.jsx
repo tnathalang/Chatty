@@ -53,7 +53,7 @@ class App extends Component {
 
     const msg = {
       type: 'postMessage',
-      username: "Bob",
+      username: this.state.currentUser.name,
       content: updateMessage,
       id: uuid.v4()
     }
@@ -68,16 +68,23 @@ class App extends Component {
 
     const newMessage = {
       id: uuid.v4(),
-      username: "Bob",
+      username: this.state.currentUser.name,
       content: updateMessage
     };
     const messages = this.state.messages.concat(newMessage)
-
-
     this.setState({
       messages: messages
     })
   }
+
+  updateUsername = newUsername => {
+    this.setState({
+      currentUser: { name: newUsername }
+    })
+  }
+
+
+
   render() {
     return (
       <div>
@@ -95,8 +102,10 @@ class App extends Component {
 
 
         <ChatBar
-          currentUser={this.state.currentUser}
+          currentUser={this.state.currentUser.name}
           addNewMessage={this.addNewMessage}
+          updateUsername={this.updateUsername}
+
         />
 
       </div>
