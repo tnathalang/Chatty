@@ -38,7 +38,6 @@ const getColor = () => {
 
 const sendClientInfo = (client, clientInfo) => {
 
-
     const clientInfoToSend = {
         ...clientInfo,
         numOfClients: Object.keys(clientList).length,
@@ -62,12 +61,9 @@ const connectClient = (client, clienNb) => {
     sendClientInfo(client, clientList[clientId])
 }
 
-wss.broadcast = function broadcast(data, ws) {
-
+wss.broadcast = function broadcast(data) {
     wss.clients.forEach(function each(client) {
-        if (client !== ws) {
-            client.send(data);
-        }
+        client.send(data);
     });
 };
 
@@ -78,8 +74,6 @@ wss.broadcast = function broadcast(data, ws) {
 wss.on('connection', (ws) => {
 
     connectClient(ws, wss.clients.size)
-    console.log(clientList)
-
     ws.on('message', msg => {
 
 
@@ -98,13 +92,14 @@ wss.on('connection', (ws) => {
 
                 break;
             case 'postMessage':
-
                 serverMessage = {
                     id: uuidv4(),
                     type: 'incomingMessage',
                     content: clientMessage.content,
-                    username: clientMessage.username
+                    username: clientMessage.username,
+                    color: clientMessage.color
                 }
+                console.log("server message", serverMessage)
                 wss.broadcast(JSON.stringify(serverMessage), ws)
                 break;
 
