@@ -17,7 +17,6 @@ class MessageList extends Component {
             } else if (message.type === 'incomingNotification') {
                 return (
                     <div className="notification" key={message.id}>
-
                         <span className="notification-content">{message.content}</span>
                     </div>
                 )

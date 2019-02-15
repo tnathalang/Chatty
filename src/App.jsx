@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ChatBar from "./ChatBar"
 import MessageList from "./MessageList"
-import uuid from "uuid"
+
 
 
 
@@ -26,7 +26,6 @@ class App extends Component {
     this.socketServer.onmessage = event => {
 
       const newMessage = JSON.parse(event.data)
-      console.log("what is me", newMessage)
       switch (newMessage.type) {
         case 'incomingClientInfo':
           this.updateClientInfo(newMessage)
@@ -58,12 +57,9 @@ class App extends Component {
 
   updateMessages = (msg) => {
     this.setState({
-
       messages: [...this.state.messages, msg]
-
     })
   }
-
 
   addNewMessage = updateMessage => {
 
@@ -78,29 +74,19 @@ class App extends Component {
   }
 
   sendUpdateUsername = newUsername => {
+
     const message = {
       type: 'PostNotification',
       content: `${this.state.currentUser.name} has changed their name to ${newUsername}`
     }
-    console.log("PLEASE TALK", newUsername)
 
     this.socketServer.send(JSON.stringify(message))
   }
 
-  // updateUsername = newUsername => {
-  //   let newMessage = this.sendUpdateUsername(newUsername)
-  //   console.log(newUsername)
-  //   const messages = this.state.messages.concat(newMessage)
+  sendImage = image => {
 
-  //   this.setState({
 
-  //     currentUser: {
-  //       ...this.state.currentUser,
-  //       name: newUsername
-  //     },
-  //     messages: messages
-  //   })
-  // }
+  }
 
   render() {
     return (
