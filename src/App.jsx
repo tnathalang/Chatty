@@ -83,11 +83,6 @@ class App extends Component {
     this.socketServer.send(JSON.stringify(message))
   }
 
-  sendImage = image => {
-
-
-  }
-
   render() {
     return (
       <div>
