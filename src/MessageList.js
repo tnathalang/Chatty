@@ -9,15 +9,16 @@ class MessageList extends Component {
 
     render() {
         const renderMessages = this.props.messages.map(message => {
-            if (message.type === "incomingMessage") {
+            if (message.type === 'incomingMessage') {
                 return (
                     < Message key={message.id} message={message} color={this.props.color}
                     />
                 )
-            } else {
+            } else if (message.type === 'incomingNotification') {
                 return (
-                    <div class="notification">
-                        <span class="notification-content">Anonymous1 changed their name to nomnom.</span>
+                    <div className="notification" key={message.id}>
+
+                        <span className="notification-content">{message.content}</span>
                     </div>
                 )
             }

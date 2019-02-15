@@ -32,7 +32,7 @@ class App extends Component {
           this.updateClientInfo(newMessage)
           break;
         case 'incomingNotification':
-          this.addNewNotification(newMessage)
+          this.updateMessages(newMessage)
           break;
         case 'incomingMessage':
           console.log("incomingMessage")
@@ -44,6 +44,7 @@ class App extends Component {
     }
   }
 
+
   updateClientInfo = ({ id, name, color, numOfClients }) => {
     this.setState({
       currentUser: {
@@ -53,12 +54,6 @@ class App extends Component {
       },
       numOfClients
     })
-  }
-
-
-  addNewNotification = msg => {
-
-    console.log(`adding ${JSON.stringify(msg)}`)
   }
 
   updateMessages = (msg) => {
@@ -87,25 +82,25 @@ class App extends Component {
       type: 'PostNotification',
       content: `${this.state.currentUser.name} has changed their name to ${newUsername}`
     }
+    console.log("PLEASE TALK", newUsername)
 
     this.socketServer.send(JSON.stringify(message))
-    return message
   }
 
-  updateUsername = newUsername => {
-    let newMessage = this.sendUpdateUsername(newUsername)
-    console.log(newUsername)
-    const messages = this.state.messages.concat(newMessage)
+  // updateUsername = newUsername => {
+  //   let newMessage = this.sendUpdateUsername(newUsername)
+  //   console.log(newUsername)
+  //   const messages = this.state.messages.concat(newMessage)
 
-    this.setState({
+  //   this.setState({
 
-      currentUser: {
-        ...this.state.currentUser,
-        name: newUsername
-      },
-      messages: messages
-    })
-  }
+  //     currentUser: {
+  //       ...this.state.currentUser,
+  //       name: newUsername
+  //     },
+  //     messages: messages
+  //   })
+  // }
 
   render() {
     return (
@@ -121,16 +116,14 @@ class App extends Component {
         />
 
         <div className="message system">
-          {this.sendUpdateUsername}
+
         </div>
 
 
         <ChatBar
           currentUser={this.state.currentUser.name}
           addNewMessage={this.addNewMessage}
-          updateUsername={this.updateUsername}
-
-
+          sendUpdateUsername={this.sendUpdateUsername}
 
         />
 
