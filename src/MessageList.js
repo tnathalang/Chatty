@@ -9,9 +9,10 @@ class MessageList extends Component {
 
     render() {
         const renderMessages = this.props.messages.map(message => {
+            console.log("POGGERINO", message)
 
             return (
-                < Message key={message.id} username={message.username} content={message.content}
+                < Message key={message.id} message={message}
                 />
             )
         })

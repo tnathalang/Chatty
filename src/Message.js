@@ -2,21 +2,18 @@ import React, { Component } from 'react';
 
 class Message extends Component {
     render() {
-
-        const message = this.props.content
-        const username = this.props.username
-        const userId = this.props.id
+        const { content, username, userId, color } = this.props.message
 
         return (
             <div className="message" >
                 {userId}
 
-                <div className="message-username">
+                <div className="message-username" style={{ color: color }}>
                     {username}
                 </div>
 
                 <div className="message-content">
-                    {message}
+                    {content}
                 </div>
 
             </div>

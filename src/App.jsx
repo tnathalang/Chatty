@@ -11,12 +11,10 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentUser: { name: "Bob" },
+      currentUser: { id: null, name: "", color: 'black' },
       messages: [] // messages coming from the server will be stored here as they arrive
     };
   }
-
-
 
   componentDidMount() {
     const url = 'ws://localhost:3001'
@@ -26,20 +24,46 @@ class App extends Component {
       console.log("Connected to the server");
     };
 
-    this.socketServer.onmessage = message => {
+    this.socketServer.onmessage = event => {
 
-      const newMessage = JSON.parse(message.data)
-      console.log("client onMessage: ", newMessage)
+      const newMessage = JSON.parse(event.data)
+      switch (newMessage.type) {
+        case 'incomingClientInfo':
+
+          this.updateClientInfo(newMessage)
+          break;
+        case 'incomingNotification':
+          this.addNewNotification(newMessage)
+          break;
+        default:
+          console.log('Unknown Message from server')
+      }
       this.setState({
         messages: this.state.messages.concat(newMessage)
       })
     }
+  }
 
+  updateClientInfo = ({ id, name, color, numOfClients }) => {
+    console.log('CLIENTS', numOfClients)
 
-
-
+    this.setState({
+      currentUser: {
+        name,
+        id,
+        color
+      },
+      numOfClients
+    })
 
   }
+
+
+  addNewNotification = msg => {
+
+    console.log(`adding ${JSON.stringify(msg)}`)
+  }
+
 
   sendNewMessage = updateMessage => {
 
@@ -84,9 +108,13 @@ class App extends Component {
     let newMessage = this.sendUpdateUsername(newUsername)
     console.log(newUsername)
     const messages = this.state.messages.concat(newMessage)
-    console.log("messages is being created")
+
     this.setState({
-      currentUser: { name: newUsername },
+
+      currentUser: {
+        ...this.state.currentUser,
+        name: newUsername
+      },
       messages: messages
     }, () => { console.log(this.state.currentUser) })
   }
@@ -98,10 +126,12 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
+          <h4>User Online: {this.state.numOfClients} </h4>
         </nav>
 
         <MessageList
           messages={this.state.messages}
+          color={this.state.currentUser.color}
         />
 
         <div className="message system">
@@ -113,6 +143,7 @@ class App extends Component {
           currentUser={this.state.currentUser.name}
           addNewMessage={this.addNewMessage}
           updateUsername={this.updateUsername}
+
 
         />
 
