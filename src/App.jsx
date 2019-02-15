@@ -7,11 +7,10 @@ import uuid from "uuid"
 
 class App extends Component {
 
-
   constructor(props) {
     super(props)
     this.state = {
-      currentUser: { id: null, name: "", color: 'black' },
+      currentUser: { id: null, name: "", color: "black" },
       messages: [] // messages coming from the server will be stored here as they arrive
     };
   }
@@ -27,26 +26,25 @@ class App extends Component {
     this.socketServer.onmessage = event => {
 
       const newMessage = JSON.parse(event.data)
+      console.log("what is me", newMessage)
       switch (newMessage.type) {
         case 'incomingClientInfo':
-
           this.updateClientInfo(newMessage)
           break;
         case 'incomingNotification':
           this.addNewNotification(newMessage)
           break;
+        case 'incomingMessage':
+          console.log("incomingMessage")
+          this.updateMessages(newMessage)
+          break;
         default:
           console.log('Unknown Message from server')
       }
-      this.setState({
-        messages: this.state.messages.concat(newMessage)
-      })
     }
   }
 
   updateClientInfo = ({ id, name, color, numOfClients }) => {
-    console.log('CLIENTS', numOfClients)
-
     this.setState({
       currentUser: {
         name,
@@ -55,7 +53,6 @@ class App extends Component {
       },
       numOfClients
     })
-
   }
 
 
@@ -64,34 +61,25 @@ class App extends Component {
     console.log(`adding ${JSON.stringify(msg)}`)
   }
 
+  updateMessages = (msg) => {
+    this.setState({
 
-  sendNewMessage = updateMessage => {
+      messages: [...this.state.messages, msg]
 
-
-    const msg = {
-      type: 'postMessage',
-      username: this.state.currentUser.name,
-      content: updateMessage,
-      id: uuid.v4()
-    }
-
-    this.socketServer.send(JSON.stringify(msg))
-
+    })
   }
+
 
   addNewMessage = updateMessage => {
 
-    this.sendNewMessage(updateMessage)
-
     const newMessage = {
-      id: uuid.v4(),
+      type: "postMessage",
       username: this.state.currentUser.name,
-      content: updateMessage
+      content: updateMessage,
+      color: this.state.currentUser.color
     };
-    const messages = this.state.messages.concat(newMessage)
-    this.setState({
-      messages: messages
-    })
+
+    this.socketServer.send(JSON.stringify(newMessage))
   }
 
   sendUpdateUsername = newUsername => {
@@ -116,17 +104,15 @@ class App extends Component {
         name: newUsername
       },
       messages: messages
-    }, () => { console.log(this.state.currentUser) })
+    })
   }
-
-
 
   render() {
     return (
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
-          <h4>User Online: {this.state.numOfClients} </h4>
+          <h4>Currently Online: {this.state.numOfClients} </h4>
         </nav>
 
         <MessageList
@@ -143,6 +129,7 @@ class App extends Component {
           currentUser={this.state.currentUser.name}
           addNewMessage={this.addNewMessage}
           updateUsername={this.updateUsername}
+
 
 
         />

@@ -27,6 +27,7 @@ class ChatBar extends Component {
                     placeholder="Your Name (Optional)"
                     onKeyDown={this.handleOnKeyDown}
 
+
                 />
 
                 <input
