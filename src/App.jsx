@@ -34,7 +34,6 @@ class App extends Component {
           this.updateMessages(newMessage)
           break;
         case 'incomingMessage':
-          console.log("incomingMessage")
           this.updateMessages(newMessage)
           break;
         default:
@@ -59,6 +58,7 @@ class App extends Component {
     this.setState({
       messages: [...this.state.messages, msg]
     })
+
   }
 
   addNewMessage = updateMessage => {
@@ -69,7 +69,6 @@ class App extends Component {
       content: updateMessage,
       color: this.state.currentUser.color
     };
-
     this.socketServer.send(JSON.stringify(newMessage))
   }
 
@@ -79,6 +78,12 @@ class App extends Component {
       type: 'PostNotification',
       content: `${this.state.currentUser.name} has changed their name to ${newUsername}`
     }
+    this.setState({
+      currentUser: {
+        ...this.state.currentUser,
+        name: newUsername
+      }
+    })
 
     this.socketServer.send(JSON.stringify(message))
   }
