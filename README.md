@@ -6,7 +6,7 @@ A minimal and light chatting app using React.js
 ### Screenshots
 
 
-
+!["Screenshot of chatty messages in action!"](https://github.com/tnathalang/Chatty/blob/master/docs/Screen%20Shot%202019-02-15%20at%2010.36.43%20PM.png?raw=true)
 
 
 
