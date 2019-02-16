@@ -5,7 +5,12 @@ class ChatBar extends Component {
     handleOnKeyDown = event => {
 
         if (event.key === "Enter" || event.key === "Tab") {
-            this.props.sendUpdateUsername(event.target.value)
+
+            if (event.target.value === "") {
+                this.props.currentUser
+            } else {
+                this.props.sendUpdateUsername(event.target.value)
+            }
         }
     }
     onKeyDown = event => {
